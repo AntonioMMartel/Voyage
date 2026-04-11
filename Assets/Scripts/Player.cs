@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -8,31 +10,47 @@ public class Player : MonoBehaviour
 
     private float currentSpeed;
 
+    [SerializeField] InputActionReference pitch; // Arriba abajo
+    [SerializeField] InputActionReference yaw; // Izquierda derecha
+    [SerializeField] InputActionReference thrust;
+
+
+    private void OnEnable()
+    {
+        pitch.action.Enable();
+        yaw.action.Enable();
+        thrust.action.Enable();
+
+        pitch.action.started += PitchRotate;
+        pitch.action.performed += PitchRotate;
+        pitch.action.canceled += PitchRotate;
+    }
+
+    void OnDisable()
+    {
+        pitch.action.Disable();
+        yaw.action.Disable();
+        thrust.action.Disable();
+    }
+
+    private void PitchRotate(InputAction.CallbackContext context)
+    {
+        
+    }
     void Update()
     {
-        // Increase speed with Space
-        if (Input.GetKey(KeyCode.Space))
-        {
-            currentSpeed += acceleration * Time.deltaTime;
-        }
-        else
-        {
-            currentSpeed -= acceleration * Time.deltaTime;
-        }
+        float pitchInput = pitch.action.ReadValue<float>();
+        float yawInput = yaw.action.ReadValue<float>();
+        float thrustInput = thrust.action.ReadValue<float>();
 
-        currentSpeed = Mathf.Clamp(currentSpeed, 0f, speed);
+        float rollInput = -yawInput; // or separate action
 
-        // Move forward constantly
-        transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
+        transform.Rotate(
+            -pitchInput * rotationSpeed * Time.deltaTime,
+             yawInput * rotationSpeed * Time.deltaTime,
+             rollInput * rotationSpeed * Time.deltaTime
+        );
 
-        // Input axes
-        float pitch = Input.GetAxis("Vertical");   // W/S or Up/Down
-        float yaw = Input.GetAxis("Horizontal"); // A/D or Left/Right
-        float roll = Input.GetKey(KeyCode.Q) ? 1f : Input.GetKey(KeyCode.E) ? -1f : 0f;
-
-        // Apply rotations
-        transform.Rotate(-pitch * rotationSpeed * Time.deltaTime,
-                          yaw * rotationSpeed * Time.deltaTime,
-                          roll * rotationSpeed * Time.deltaTime);
+        transform.Translate(Vector3.forward * thrustInput * speed * Time.deltaTime);
     }
 }
