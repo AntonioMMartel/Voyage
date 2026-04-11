@@ -4,15 +4,26 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 20f;
-    public float acceleration = 5f;
-    public float rotationSpeed = 60f;
-
-    private float currentSpeed;
-
-    [SerializeField] InputActionReference pitch; // Arriba abajo
-    [SerializeField] InputActionReference yaw; // Izquierda derecha
+    [Header("Input")]
+    [SerializeField] InputActionReference pitch;
+    [SerializeField] InputActionReference yaw;
     [SerializeField] InputActionReference thrust;
+
+    [Header("Movement")]
+    public float maxSpeed = 20f;
+    public float acceleration = 8f;
+    private float currentSpeed;
+    public float drag = 10f;
+
+    [Header("Rotation")]
+    public float rotationSpeed = 80f;
+
+    [Header("Smoothing")]
+    public float inputSmoothSpeed = 5f;
+
+    private float pitchSmooth;
+    private float yawSmooth;
+    private float thrustSmooth;
 
 
     private void OnEnable()
@@ -43,12 +54,26 @@ public class Player : MonoBehaviour
         float yawInput = yaw.action.ReadValue<float>();
         float thrustInput = thrust.action.ReadValue<float>();
 
-        transform.Rotate(
-            -pitchInput * rotationSpeed * Time.deltaTime,
-            0,
-             yawInput * rotationSpeed * Time.deltaTime
-             );
+        Debug.Log(thrust.action.ReadValue<float>());
 
-        transform.Translate(Vector3.forward * thrustInput * speed * Time.deltaTime);
+
+        pitchSmooth = Mathf.Lerp(pitchSmooth, pitchInput, Time.deltaTime * inputSmoothSpeed);
+        yawSmooth = Mathf.Lerp(yawSmooth, yawInput, Time.deltaTime * inputSmoothSpeed);
+        thrustSmooth = Mathf.Lerp(thrustSmooth, thrustInput, Time.deltaTime * inputSmoothSpeed);
+
+        currentSpeed += thrustSmooth * acceleration * Time.deltaTime;
+        if (thrustSmooth <= 0.01f)
+        {
+            currentSpeed -= drag * Time.deltaTime;
+        }
+        currentSpeed = Mathf.Clamp(currentSpeed, 0f, maxSpeed);
+
+        transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
+
+        transform.Rotate(
+            -pitchSmooth * rotationSpeed * Time.deltaTime,
+            0f,
+             yawSmooth * rotationSpeed * Time.deltaTime
+        );
     }
 }
