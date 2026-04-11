@@ -43,13 +43,11 @@ public class Player : MonoBehaviour
         float yawInput = yaw.action.ReadValue<float>();
         float thrustInput = thrust.action.ReadValue<float>();
 
-        float rollInput = -yawInput; // or separate action
-
         transform.Rotate(
             -pitchInput * rotationSpeed * Time.deltaTime,
-             yawInput * rotationSpeed * Time.deltaTime,
-             rollInput * rotationSpeed * Time.deltaTime
-        );
+            0,
+             yawInput * rotationSpeed * Time.deltaTime
+             );
 
         transform.Translate(Vector3.forward * thrustInput * speed * Time.deltaTime);
     }
