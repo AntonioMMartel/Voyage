@@ -365,6 +365,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 426058610a18cd040bef9100a530c35c, type: 2}
+    - target: {fileID: 5765408517425634019, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6027800171687980298, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.97033
@@ -409,13 +413,17 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 1.092
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5765408517425634019, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2602317308123640098, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1124019395}
+    - targetCorrespondingSourceObject: {fileID: 2602317308123640098, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1124019396}
   m_SourcePrefab: {fileID: 100100000, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
 --- !u!1 &330585543
 GameObject:
@@ -884,7 +892,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1113714847}
   - component: {fileID: 1113714846}
-  - component: {fileID: 1113714848}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -950,32 +957,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1113714848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1113714845}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
-  Damping: {x: 0.1, y: 0.5, z: 0.3}
-  ShoulderOffset: {x: 0, y: 0.6, z: 0}
-  VerticalArmLength: 0.4
-  CameraSide: 1
-  CameraDistance: 4
-  AvoidObstacles:
-    Enabled: 0
-    CollisionFilter:
-      serializedVersion: 2
-      m_Bits: 1
-    IgnoreTag: 
-    CameraRadius: 0.2
-    DampingIntoCollision: 0
-    DampingFromCollision: 0.5
 --- !u!1 &1124019393 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2602317308123640098, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
@@ -1007,9 +988,37 @@ MonoBehaviour:
   fallSpeed: 15
   minFlightSpeed: 5
   turnSpeed: 2
-  maxRollAngle: 20
-  rotationSpeed: 60
+  pitchTorque: 50
+  rollTorque: 50
+  yawTorque: 20
   inputSmoothSpeed: 5
+--- !u!54 &1124019396
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124019393}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 8
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &1379967863
 GameObject:
   m_ObjectHideFlags: 0
