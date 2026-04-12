@@ -349,10 +349,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2525852641784864961, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525852641784864961, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
+      propertyPath: m_Intensity
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2602317308123640098, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4373360055781781119, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 426058610a18cd040bef9100a530c35c, type: 2}
     - target: {fileID: 6027800171687980298, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.97033
@@ -392,6 +404,10 @@ PrefabInstance:
     - target: {fileID: 6027800171687980298, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9218272281276277216, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.092
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -982,12 +998,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60afe550aff67af42a07fa382ce632ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  speed: 20
-  acceleration: 5
-  rotationSpeed: 60
   pitch: {fileID: 5235756686928283314, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  yaw: {fileID: -5588797925759918623, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  roll: {fileID: -5588797925759918623, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   thrust: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  maxSpeed: 20
+  acceleration: 5
+  drag: 10
+  fallSpeed: 15
+  minFlightSpeed: 5
+  turnSpeed: 2
+  maxRollAngle: 20
+  rotationSpeed: 60
+  inputSmoothSpeed: 5
 --- !u!1 &1379967863
 GameObject:
   m_ObjectHideFlags: 0
