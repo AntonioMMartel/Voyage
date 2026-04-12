@@ -34,6 +34,14 @@ public class Player : MonoBehaviour
     private float pitchInput, rollInput, thrustInput;
     private float pitchSmooth, yawSmooth, rollSmooth;
 
+    [SerializeField] float rollDampen = 5f;
+    [SerializeField] float pitchDampen = 1f;
+    [SerializeField] float thrustDampen = 2f;
+
+    [Header("Gravity")]
+    [SerializeField] float flightSpeedThreshold= 10f;
+    [SerializeField] float gravityMultiplier = 1f; // base gravity strength
+    [SerializeField] float pitchStallTorque = 20f;
 
     void Awake()
     {
@@ -70,14 +78,19 @@ public class Player : MonoBehaviour
         //yawSmooth = Mathf.Lerp(yawSmooth, yawInput, Time.fixedDeltaTime * inputSmoothSpeed);
         rollSmooth = Mathf.Lerp(rollSmooth, rollInput, Time.fixedDeltaTime);
 
+
+        // cuando dejas de pulsa desacelera
+        float accelRate = (thrustInput > 0.01f) ? acceleration : -thrustDampen;
+
+
         // Speed control
         float targetSpeed = thrustInput * maxSpeed;
-        currentSpeed += thrustInput * acceleration * Time.fixedDeltaTime;
+        currentSpeed += accelRate * Time.fixedDeltaTime;
         currentSpeed = Mathf.Clamp(currentSpeed, 0f, maxSpeed);
 
-        // Apply forward velocity
-        rb.linearVelocity = transform.forward * currentSpeed;// + Vector3.up * rb.linearVelocity.y;
 
+        // Apply forward velocity
+        rb.linearVelocity = transform.forward * currentSpeed;
 
         // --- ROTATION ---
 
@@ -90,6 +103,7 @@ public class Player : MonoBehaviour
 
         rb.AddRelativeTorque(torque, ForceMode.Force);
 
+
         // --- TURN FROM ROLL (important) ---
         float rollAngle = transform.eulerAngles.z;
         if (rollAngle > 180f) rollAngle -= 360f;
@@ -97,5 +111,49 @@ public class Player : MonoBehaviour
         float turnAmount = (rollAngle / 45f) * turnSpeed;
 
         //rb.AddTorque(Vector3.up * turnAmount * currentSpeed, ForceMode.Force);
+
+
+        // Estabilización
+
+        Vector3 localAngular = transform.InverseTransformDirection(rb.angularVelocity);
+
+        // Strong damping on roll when no input
+        if (Mathf.Abs(rollInput) < 0.01f)
+        {
+            localAngular.z = Mathf.Lerp(localAngular.z, 0f, Time.fixedDeltaTime * rollDampen);
+        }
+
+        // Optional: mild damping on pitch too
+        if (Mathf.Abs(pitchInput) < 0.01f)
+        {
+            localAngular.x = Mathf.Lerp(localAngular.x, 0f, Time.fixedDeltaTime * pitchDampen);
+        }
+
+        rb.angularVelocity = transform.TransformDirection(localAngular);
+
+        
+        // Gravity
+
+        float gravityFactor = 1f - Mathf.InverseLerp(0f, minFlightSpeed, currentSpeed);
+
+        Vector3 gravityForce = Physics.gravity * gravityMultiplier * gravityFactor;
+
+        // Pitch hacia delante al caer
+
+        // Prevenimos que interrumpa input
+        bool hasPitchInput = Mathf.Abs(pitchInput) > 0.01f;
+        bool hasRollInput = Mathf.Abs(rollInput) > 0.01f;
+        bool hasInput = hasPitchInput || hasRollInput;
+
+        float pitchAngle = transform.eulerAngles.x;
+        if (pitchAngle > 180f) pitchAngle -= 360f;
+
+        // Al final si paras el motor te caes girando sin control que mola y se ve realista
+        if (pitchAngle < 80f & !hasInput) // pitchAngle > ángulo máximo de caída
+        {
+            float stallPitchForce = gravityFactor * pitchStallTorque;
+            rb.AddRelativeTorque(Vector3.right * stallPitchForce, ForceMode.Acceleration);
+        }
+        rb.AddForce(gravityForce, ForceMode.Acceleration);
     }
 }
