@@ -39,10 +39,17 @@ public class Chunk
 
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-            cube.transform.position = pos;
-            cube.transform.localScale = Vector3.one * Random.Range(2f, 6f);
-            cube.transform.rotation = Random.rotation;
+            float targetScale = Random.Range(2f, 12f);
 
+            // Start at zero scale
+            cube.transform.localScale = Vector3.zero;
+
+            // Add effect
+            var effect = cube.AddComponent<ScaleInEffect>();
+            effect.Play(targetScale);
+
+            cube.transform.position = pos;
+            cube.transform.rotation = Random.rotation;
             cube.transform.SetParent(parentObject.transform);
         }
     }
