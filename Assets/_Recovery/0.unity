@@ -1207,7 +1207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChunkGenerator
   player: {fileID: 1124019394}
   chunkSize: 100
-  spacing: 11
+  spacing: 10
 --- !u!4 &1393967076
 Transform:
   m_ObjectHideFlags: 0
