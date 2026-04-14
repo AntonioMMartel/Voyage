@@ -61,4 +61,6 @@ public class ChunkGenerator : MonoBehaviour
             chunks.Remove(coord);
         }
     }
+
+
 }

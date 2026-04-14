@@ -22,38 +22,105 @@ public class Chunk
         Generate();
     }
 
+    /* Este es el malo
     void Generate()
     {
-        int cubeCount = Mathf.FloorToInt((chunkSize * chunkSize) / (spacing * spacing));
-        for (int i = 0; i < cubeCount; i++)
+        float noiseScale = 0.1f;   // controls cluster size
+        float threshold = 0.8f;     // controls density (higher = fewer cubes)
+
+        for (float x = 0; x < chunkSize; x += spacing)
         {
-            float randomX = Random.Range(0, chunkSize);
-            float randomY = Random.Range(-chunkHeight, chunkHeight);
-            float randomZ = Random.Range(0, chunkSize);
+            for (float z = 0; z < chunkSize; z += spacing)
+            {
+                float worldX = coord.x * chunkSize + x;
+                float worldZ = coord.y * chunkSize + z;
 
-            Vector3 pos = new Vector3(
-                coord.x * chunkSize + randomX,
-                randomY,
-                coord.y * chunkSize + randomZ
-            );
 
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                // Sample Perlin noise
+                float noise = Mathf.PerlinNoise(worldX * noiseScale, worldZ * noiseScale);
 
-            float targetScale = Random.Range(2f, 12f);
+                if (noise > threshold)
+                {
+                    float worldY = Mathf.Lerp(-chunkHeight, chunkHeight, noise);
+                    Vector3 pos = new Vector3(worldX, worldY, worldZ);
 
-            // Start at zero scale
-            cube.transform.localScale = Vector3.zero;
+                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-            // Add effect
-            var effect = cube.AddComponent<ScaleInEffect>();
-            effect.Play(targetScale);
+                    float targetScale = Mathf.Lerp(2f, 12f, noise);
 
-            cube.transform.position = pos;
-            cube.transform.rotation = Random.rotation;
-            cube.transform.SetParent(parentObject.transform);
+                    cube.transform.localScale = Vector3.zero;
+
+                    var effect = cube.AddComponent<ScaleInEffect>();
+                    effect.Play(targetScale);
+
+                    cube.transform.position = pos;
+                    cube.transform.rotation = Random.rotation;
+                    cube.transform.SetParent(parentObject.transform);
+                }
+            }
+        }
+    }
+    */
+
+    void Generate()
+    {
+        float noiseScale = 0.04f;
+        float threshold = 0.6f;
+
+        float step = spacing * 5f; // IMPORTANT: controls density & performance
+
+        for (float x = 0; x < chunkSize; x += step)
+        {
+            for (float y = -chunkHeight; y < chunkHeight; y += step)
+            {
+                for (float z = 0; z < chunkSize; z += step)
+                {
+                    float worldX = coord.x * chunkSize + x;
+                    float worldY = y;
+                    float worldZ = coord.y * chunkSize + z;
+
+                    float noise = Perlin3D(
+                        worldX * noiseScale,
+                        worldY * noiseScale,
+                        worldZ * noiseScale
+                    );
+
+                    if (noise < threshold)
+                        continue;
+
+                    SpawnCube(worldX, worldY, worldZ, noise);
+                }
+            }
         }
     }
 
+    float Perlin3D(float x, float y, float z)
+    {
+        float xy = Mathf.PerlinNoise(x, y);
+        float yz = Mathf.PerlinNoise(y, z);
+        float xz = Mathf.PerlinNoise(x, z);
+
+        float yx = Mathf.PerlinNoise(y, x);
+        float zy = Mathf.PerlinNoise(z, y);
+        float zx = Mathf.PerlinNoise(z, x);
+
+        return (xy + yz + xz + yx + zy + zx) / 6f;
+    }
+
+    void SpawnCube(float x, float y, float z, float noise)
+    {
+        Vector3 pos = new Vector3(x, y, z);
+
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+        float size = Mathf.Lerp(2f, 8f, noise);
+
+        cube.transform.localScale = Vector3.one * size;
+        cube.transform.position = pos;
+        cube.transform.rotation = Random.rotation;
+
+        cube.transform.SetParent(parentObject.transform);
+    }
     public void Destroy()
     {
         GameObject.Destroy(parentObject);
