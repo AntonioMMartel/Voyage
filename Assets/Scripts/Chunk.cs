@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Chunk
 {
@@ -6,12 +7,23 @@ public class Chunk
     public GameObject parentObject;
 
 
-    private float chunkSize, spacing, clusterCount, elementsPerCluster, clusterRadius, noiseScale, threshold;
+    private float chunkSize, spacing, clusterCount, elementsPerCluster, clusterRadius, noiseScale, threshold, typeScale;
+    private GameObject[] elements;
     float density = 20f; 
 
     public float chunkHeight = 500f;
 
-    public Chunk(Vector2Int coord, float chunkSize, float spacing, float clusterCount, float elementsPerCluster, float clusterRadius, float noiseScale, float threshold)
+
+    public Chunk(Vector2Int coord,
+        float chunkSize, 
+        float spacing, 
+        float clusterCount, 
+        float elementsPerCluster, 
+        float clusterRadius, 
+        float noiseScale, 
+        float threshold, 
+        GameObject[] elements,
+        float elementTypeNoiseScale)
     {
         this.coord = coord;
         this.chunkSize = chunkSize;
@@ -24,77 +36,53 @@ public class Chunk
         this.noiseScale = noiseScale;
         this.threshold = threshold;
 
+        this.elements = elements;
+        
+        this.typeScale = elementTypeNoiseScale;
+
         parentObject = new GameObject($"Chunk_{coord.x}_{coord.y}");
         Generate();
     }
-
-    /* Este es el malo
-    void Generate()
-    {
-        float noiseScale = 0.1f;   // controls cluster size
-        float threshold = 0.8f;     // controls density (higher = fewer cubes)
-
-        for (float x = 0; x < chunkSize; x += spacing)
-        {
-            for (float z = 0; z < chunkSize; z += spacing)
-            {
-                float worldX = coord.x * chunkSize + x;
-                float worldZ = coord.y * chunkSize + z;
-
-
-                // Sample Perlin noise
-                float noise = Mathf.PerlinNoise(worldX * noiseScale, worldZ * noiseScale);
-
-                if (noise > threshold)
-                {
-                    float worldY = Mathf.Lerp(-chunkHeight, chunkHeight, noise);
-                    Vector3 pos = new Vector3(worldX, worldY, worldZ);
-
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-
-                    float targetScale = Mathf.Lerp(2f, 12f, noise);
-
-                    cube.transform.localScale = Vector3.zero;
-
-                    var effect = cube.AddComponent<ScaleInEffect>();
-                    effect.Play(targetScale);
-
-                    cube.transform.position = pos;
-                    cube.transform.rotation = Random.rotation;
-                    cube.transform.SetParent(parentObject.transform);
-                }
-            }
-        }
-    }
-    */
-
     void Generate()
     {
         for (int c = 0; c < clusterCount; c++)
         {
-            // Random cluster center inside chunk
+            
             Vector3 center = new Vector3(
                 coord.x * chunkSize + Random.Range(0, chunkSize),
                 Random.Range(-chunkHeight, chunkHeight),
                 coord.y * chunkSize + Random.Range(0, chunkSize)
             );
 
-            // Use noise to decide if this cluster should exist
             float noise = Perlin3D(
                 center.x * noiseScale,
                 center.y * noiseScale,
                 center.z * noiseScale
             );
 
+            GameObject selectedElement;
+
             if (noise < threshold)
                 continue;
 
-            // Spawn asteroids inside cluster
+            float typeNoise = Perlin3D(
+                center.x * typeScale,
+                center.y * typeScale,
+                center.z * typeScale
+            );
+
+            if (typeNoise < 0.33f)
+                selectedElement = elements[0];
+            else if (typeNoise < 0.44f)
+                selectedElement = elements[1];
+            else
+                selectedElement = elements[2];
+
+
             for (int i = 0; i < elementsPerCluster; i++)
             {
                 Vector3 offset = Random.insideUnitSphere * clusterRadius;
 
-                // Optional: falloff so edges are less dense
                 float falloff = 1f - (offset.magnitude / clusterRadius);
 
                 if (Random.value > falloff)
@@ -102,7 +90,8 @@ public class Chunk
 
                 Vector3 pos = center + offset;
 
-                SpawnCube(pos.x, pos.y, pos.z, noise);
+                
+                SpawnElement(pos.x, pos.y, pos.z, noise, selectedElement);
             }
         }
     }
@@ -120,19 +109,19 @@ public class Chunk
         return (xy + yz + xz + yx + zy + zx) / 6f;
     }
 
-    void SpawnCube(float x, float y, float z, float noise)
+    void SpawnElement(float x, float y, float z, float noise, GameObject selectedElement)
     {
         Vector3 pos = new Vector3(x, y, z);
 
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        GameObject element = Object.Instantiate(selectedElement, pos, Random.rotation);
 
         float size = Mathf.Lerp(2f, 8f, noise);
 
-        cube.transform.localScale = Vector3.one * size;
-        cube.transform.position = pos;
-        cube.transform.rotation = Random.rotation;
+        element.transform.localScale = Vector3.one * size;
+        element.transform.position = pos;
+        element.transform.rotation = Random.rotation;
 
-        cube.transform.SetParent(parentObject.transform);
+        element.transform.SetParent(parentObject.transform);
     }
     public void Destroy()
     {

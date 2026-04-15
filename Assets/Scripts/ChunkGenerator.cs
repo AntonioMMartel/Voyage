@@ -14,6 +14,8 @@ public class ChunkGenerator : MonoBehaviour
     [SerializeField] float clusterRadius = 60f;
 
     Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
+    [SerializeField] GameObject[] elements;
+    [SerializeField] float elementTypeNoiseScale = 0.008f;
 
     [Header("Noise Settings")]
     [SerializeField] float noiseScale = 0.01f;
@@ -33,10 +35,9 @@ public class ChunkGenerator : MonoBehaviour
 
         HashSet<Vector2Int> neededChunks = new HashSet<Vector2Int>();
 
-        // 7x7 grid
-        for (int x = -3; x <= 3; x++)
+        for (int x = -5; x <= 5; x++)
         {
-            for (int z = -3; z <= 3; z++)
+            for (int z = -5; z <= 5; z++)
             {
                 Vector2Int coord = new Vector2Int(
                     playerChunk.x + x,
@@ -55,14 +56,17 @@ public class ChunkGenerator : MonoBehaviour
                         elementsPerCluster,
                         clusterRadius,
                         noiseScale,
-                        threshold
+                        threshold,
+                        elements,
+                        elementTypeNoiseScale
                     );
                     chunks.Add(coord, newChunk);
                 }
             }
         }
 
-        // Remove unused chunks
+
+
         List<Vector2Int> toRemove = new List<Vector2Int>();
 
         foreach (var chunk in chunks)
