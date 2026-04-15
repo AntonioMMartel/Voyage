@@ -10,10 +10,14 @@ public class ChunkGenerator : MonoBehaviour
     [SerializeField] float spacing = 5f;
 
     [SerializeField] int clusterCount = 8;
-    [SerializeField] int asteroidsPerCluster = 20;
+    [SerializeField] int elementsPerCluster = 20;
     [SerializeField] float clusterRadius = 60f;
 
     Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
+
+    [Header("Noise Settings")]
+    [SerializeField] float noiseScale = 0.01f;
+    [SerializeField] float threshold = 0.55f;
 
     void Update()
     {
@@ -48,8 +52,10 @@ public class ChunkGenerator : MonoBehaviour
                         chunkSize,
                         spacing,
                         clusterCount,
-                        asteroidsPerCluster,
-                        clusterRadius
+                        elementsPerCluster,
+                        clusterRadius,
+                        noiseScale,
+                        threshold
                     );
                     chunks.Add(coord, newChunk);
                 }

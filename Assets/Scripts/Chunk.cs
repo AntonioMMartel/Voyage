@@ -6,20 +6,23 @@ public class Chunk
     public GameObject parentObject;
 
 
-    private float chunkSize, spacing, clusterCount, asteroidsPerCluster, clusterRadius;
+    private float chunkSize, spacing, clusterCount, elementsPerCluster, clusterRadius, noiseScale, threshold;
     float density = 20f; 
 
     public float chunkHeight = 500f;
 
-    public Chunk(Vector2Int coord, float chunkSize, float spacing, float clusterCount, float asteroidsPerCluster, float clusterRadius)
+    public Chunk(Vector2Int coord, float chunkSize, float spacing, float clusterCount, float elementsPerCluster, float clusterRadius, float noiseScale, float threshold)
     {
         this.coord = coord;
         this.chunkSize = chunkSize;
         this.spacing = spacing;
 
         this.clusterCount = clusterCount;
-        this.asteroidsPerCluster = asteroidsPerCluster;
+        this.elementsPerCluster = elementsPerCluster;
         this.clusterRadius = clusterRadius;
+
+        this.noiseScale = noiseScale;
+        this.threshold = threshold;
 
         parentObject = new GameObject($"Chunk_{coord.x}_{coord.y}");
         Generate();
@@ -67,13 +70,6 @@ public class Chunk
 
     void Generate()
     {
-        int clusterCount = 8;          // how many clusters per chunk
-        int asteroidsPerCluster = 20;  // density inside cluster
-        float clusterRadius = 60f;
-
-        float noiseScale = 0.01f;
-        float threshold = 0.55f;
-
         for (int c = 0; c < clusterCount; c++)
         {
             // Random cluster center inside chunk
@@ -94,7 +90,7 @@ public class Chunk
                 continue;
 
             // Spawn asteroids inside cluster
-            for (int i = 0; i < asteroidsPerCluster; i++)
+            for (int i = 0; i < elementsPerCluster; i++)
             {
                 Vector3 offset = Random.insideUnitSphere * clusterRadius;
 
