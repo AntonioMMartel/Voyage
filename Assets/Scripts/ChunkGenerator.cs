@@ -3,10 +3,15 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    public Transform player;
+    [SerializeField] Transform player;
 
-    public float chunkSize = 50f;
-    public float spacing = 5f;
+    [Header("Chunk Settings")]
+    [SerializeField] float chunkSize = 50f;
+    [SerializeField] float spacing = 5f;
+
+    [SerializeField] int clusterCount = 8;
+    [SerializeField] int asteroidsPerCluster = 20;
+    [SerializeField] float clusterRadius = 60f;
 
     Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
 
@@ -24,7 +29,7 @@ public class ChunkGenerator : MonoBehaviour
 
         HashSet<Vector2Int> neededChunks = new HashSet<Vector2Int>();
 
-        // 3x3 grid
+        // 7x7 grid
         for (int x = -3; x <= 3; x++)
         {
             for (int z = -3; z <= 3; z++)
@@ -38,7 +43,14 @@ public class ChunkGenerator : MonoBehaviour
 
                 if (!chunks.ContainsKey(coord))
                 {
-                    Chunk newChunk = new Chunk(coord, chunkSize, spacing);
+                    Chunk newChunk = new Chunk(
+                        coord,
+                        chunkSize,
+                        spacing,
+                        clusterCount,
+                        asteroidsPerCluster,
+                        clusterRadius
+                    );
                     chunks.Add(coord, newChunk);
                 }
             }

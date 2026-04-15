@@ -6,17 +6,20 @@ public class Chunk
     public GameObject parentObject;
 
 
-    float chunkSize;
-    float spacing;
-    float density = 20f;
+    private float chunkSize, spacing, clusterCount, asteroidsPerCluster, clusterRadius;
+    float density = 20f; 
 
     public float chunkHeight = 500f;
 
-    public Chunk(Vector2Int coord, float chunkSize, float spacing)
+    public Chunk(Vector2Int coord, float chunkSize, float spacing, float clusterCount, float asteroidsPerCluster, float clusterRadius)
     {
         this.coord = coord;
         this.chunkSize = chunkSize;
         this.spacing = spacing;
+
+        this.clusterCount = clusterCount;
+        this.asteroidsPerCluster = asteroidsPerCluster;
+        this.clusterRadius = clusterRadius;
 
         parentObject = new GameObject($"Chunk_{coord.x}_{coord.y}");
         Generate();
@@ -64,32 +67,46 @@ public class Chunk
 
     void Generate()
     {
-        float noiseScale = 0.04f;
-        float threshold = 0.6f;
+        int clusterCount = 8;          // how many clusters per chunk
+        int asteroidsPerCluster = 20;  // density inside cluster
+        float clusterRadius = 60f;
 
-        float step = spacing * 5f; // IMPORTANT: controls density & performance
+        float noiseScale = 0.01f;
+        float threshold = 0.55f;
 
-        for (float x = 0; x < chunkSize; x += step)
+        for (int c = 0; c < clusterCount; c++)
         {
-            for (float y = -chunkHeight; y < chunkHeight; y += step)
+            // Random cluster center inside chunk
+            Vector3 center = new Vector3(
+                coord.x * chunkSize + Random.Range(0, chunkSize),
+                Random.Range(-chunkHeight, chunkHeight),
+                coord.y * chunkSize + Random.Range(0, chunkSize)
+            );
+
+            // Use noise to decide if this cluster should exist
+            float noise = Perlin3D(
+                center.x * noiseScale,
+                center.y * noiseScale,
+                center.z * noiseScale
+            );
+
+            if (noise < threshold)
+                continue;
+
+            // Spawn asteroids inside cluster
+            for (int i = 0; i < asteroidsPerCluster; i++)
             {
-                for (float z = 0; z < chunkSize; z += step)
-                {
-                    float worldX = coord.x * chunkSize + x;
-                    float worldY = y;
-                    float worldZ = coord.y * chunkSize + z;
+                Vector3 offset = Random.insideUnitSphere * clusterRadius;
 
-                    float noise = Perlin3D(
-                        worldX * noiseScale,
-                        worldY * noiseScale,
-                        worldZ * noiseScale
-                    );
+                // Optional: falloff so edges are less dense
+                float falloff = 1f - (offset.magnitude / clusterRadius);
 
-                    if (noise < threshold)
-                        continue;
+                if (Random.value > falloff)
+                    continue;
 
-                    SpawnCube(worldX, worldY, worldZ, noise);
-                }
+                Vector3 pos = center + offset;
+
+                SpawnCube(pos.x, pos.y, pos.z, noise);
             }
         }
     }
