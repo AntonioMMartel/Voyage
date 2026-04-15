@@ -153,7 +153,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6027800171687980298, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 210
       objectReference: {fileID: 0}
     - target: {fileID: 6027800171687980298, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -291,7 +291,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.97033, y: 0.8, z: 0.5797701}
+  m_LocalPosition: {x: -5.97033, y: 210.79999, z: 0.5797701}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -620,7 +620,7 @@ Transform:
   m_GameObject: {fileID: 1113714845}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.97033, y: 0.8, z: 0.5797701}
+  m_LocalPosition: {x: -5.97033, y: 210.79999, z: 0.5797701}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -690,8 +690,8 @@ MonoBehaviour:
   pitch: {fileID: 5235756686928283314, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   roll: {fileID: -5588797925759918623, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   thrust: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  maxSpeed: 20
-  acceleration: 5
+  maxSpeed: 55
+  acceleration: 22
   drag: 10
   fallSpeed: 15
   minFlightSpeed: 22
@@ -764,13 +764,13 @@ MonoBehaviour:
   player: {fileID: 1124019394}
   chunkSize: 100
   spacing: 4
-  clusterCount: 111
+  clusterCount: 77
   elementsPerCluster: 44
-  clusterRadius: 60
+  clusterRadius: 77
   elements:
   - {fileID: 8242331978429128997, guid: 58e2b4d8da1f7fe458042d5691eba4bc, type: 3}
   - {fileID: 6219195358774839379, guid: 4b34ce6871c1e9f40bcf1fe6a3f06964, type: 3}
-  - {fileID: 6662105052845455669, guid: c33143f41f729d249baa6319c8e275af, type: 3}
+  - {fileID: 6219195358774839379, guid: 4b34ce6871c1e9f40bcf1fe6a3f06964, type: 3}
   elementTypeNoiseScale: 0.006
   noiseScale: 0.01
   threshold: 0.55

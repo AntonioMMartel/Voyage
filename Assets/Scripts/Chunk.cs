@@ -11,7 +11,7 @@ public class Chunk
     private GameObject[] elements;
     float density = 20f; 
 
-    public float chunkHeight = 500f;
+    public float chunkHeight = 700f;
 
 
     public Chunk(Vector2Int coord,
@@ -50,7 +50,7 @@ public class Chunk
             
             Vector3 center = new Vector3(
                 coord.x * chunkSize + Random.Range(0, chunkSize),
-                Random.Range(-chunkHeight, chunkHeight),
+                Random.Range(0, chunkHeight),
                 coord.y * chunkSize + Random.Range(0, chunkSize)
             );
 
@@ -115,7 +115,7 @@ public class Chunk
 
         GameObject element = Object.Instantiate(selectedElement, pos, Random.rotation);
 
-        float size = Mathf.Lerp(2f, 8f, noise);
+        float size = Mathf.Lerp(2f, 4f, noise);
 
         element.transform.localScale = Vector3.one * size;
         element.transform.position = pos;
