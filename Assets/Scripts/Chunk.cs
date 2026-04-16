@@ -9,6 +9,7 @@ public class Chunk
 
 
     private float chunkSize, spacing, clusterCount, elementsPerCluster, clusterRadius, noiseScale, threshold, typeScale;
+    private bool usesEffect;
     private GameObject[] elements;
     float density = 20f; 
 
@@ -24,7 +25,8 @@ public class Chunk
         float noiseScale, 
         float threshold, 
         GameObject[] elements,
-        float elementTypeNoiseScale)
+        float elementTypeNoiseScale,
+        bool usesEffect)
     {
         this.coord = coord;
         this.chunkSize = chunkSize;
@@ -40,6 +42,7 @@ public class Chunk
         this.elements = elements;
         
         this.typeScale = elementTypeNoiseScale;
+        this.usesEffect = usesEffect;
 
         parentObject = new GameObject($"Chunk_{coord.x}_{coord.y}");
         GeneratePerlin();
@@ -49,7 +52,7 @@ public class Chunk
     void GenerateGeneric()
     {
         float genericDensity = Mathf.FloorToInt((chunkSize * chunkSize) / spacing * spacing);
-        float genericElementsPerChunk = elementsPerCluster;
+        float genericElementsPerChunk = elementsPerCluster/5;
         for (int i = 0; i < genericElementsPerChunk; i++)
         {
             float randomX = Random.Range(0, chunkSize);
@@ -145,8 +148,17 @@ public class Chunk
         GameObject element = Object.Instantiate(selectedElement, pos, Random.rotation);
 
         float size = Mathf.Lerp(2f, 4f, noise);
-
-        element.transform.localScale = Vector3.one * size;
+        
+        if(usesEffect)
+        {
+            element.transform.localScale = Vector3.zero;
+            var effect = element.AddComponent<ScaleInEffect>();
+            effect.Play(size);
+        } else
+        {
+            element.transform.localScale = Vector3.one * size;
+        }
+       
         element.transform.position = pos;
         element.transform.rotation = Random.rotation;
 

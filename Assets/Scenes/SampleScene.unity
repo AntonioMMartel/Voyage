@@ -764,8 +764,8 @@ MonoBehaviour:
   player: {fileID: 1124019394}
   chunkSize: 100
   spacing: 4
-  clusterCount: 77
-  elementsPerCluster: 44
+  clusterCount: 55
+  elementsPerCluster: 33
   clusterRadius: 77
   elements:
   - {fileID: 8242331978429128997, guid: 58e2b4d8da1f7fe458042d5691eba4bc, type: 3}

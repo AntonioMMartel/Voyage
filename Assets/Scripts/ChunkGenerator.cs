@@ -28,7 +28,7 @@ public class ChunkGenerator : MonoBehaviour
     }
     void Update()
     {
-        //UpdateChunks();
+        UpdateChunks();
     }
 
 
@@ -41,7 +41,7 @@ public class ChunkGenerator : MonoBehaviour
 
         this.neededChunks = new HashSet<Vector2Int>();
 
-        for (int x = -10; x <= 10; x++)
+        for (int x = -12; x <= 12; x++)
         {
             for (int z = -10; z <= 10; z++)
             {
@@ -62,7 +62,8 @@ public class ChunkGenerator : MonoBehaviour
                         noiseScale,
                         threshold,
                         elements,
-                        elementTypeNoiseScale
+                        elementTypeNoiseScale,
+                        false
                     );
 
 
@@ -104,8 +105,8 @@ public class ChunkGenerator : MonoBehaviour
             for (int z = -5; z <= 5; z++)
             {
                 Vector2Int coord = new Vector2Int(
-                    0 + x,
-                    210 + z
+                    playerChunk.x + x,
+                    playerChunk.y + z
                 );
 
                 neededChunks.Add(coord);
@@ -122,7 +123,8 @@ public class ChunkGenerator : MonoBehaviour
                         noiseScale,
                         threshold,
                         elements,
-                        elementTypeNoiseScale
+                        elementTypeNoiseScale,
+                        true
                     );
                     chunks.Add(coord, newChunk);
                 }
