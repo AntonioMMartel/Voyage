@@ -15,7 +15,7 @@ public class ChunkGenerator : MonoBehaviour
     [SerializeField] float clusterRadius = 60f;
 
     Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
-    [SerializeField] GameObject[] elements;
+    [SerializeField] GameObject[] elements, elementsGeneric, elementsTerrain;
     [SerializeField] float elementTypeNoiseScale = 0.008f;
 
     [Header("Noise Settings")]
@@ -63,7 +63,9 @@ public class ChunkGenerator : MonoBehaviour
                         threshold,
                         elements,
                         elementTypeNoiseScale,
-                        false
+                        false,
+                        elementsGeneric,
+                        elementsTerrain
                     );
 
 
@@ -124,32 +126,13 @@ public class ChunkGenerator : MonoBehaviour
                         threshold,
                         elements,
                         elementTypeNoiseScale,
-                        true
+                        true,
+                        elementsGeneric,
+                        elementsTerrain
                     );
                     chunks.Add(coord, newChunk);
                 }
             }
         }
-
-        
-        /*
-        List<Vector2Int> toRemove = new List<Vector2Int>();
-
-        foreach (var chunk in chunks)
-        {
-            if (!neededChunks.Contains(chunk.Key))
-            {
-                chunk.Value.Destroy();
-                toRemove.Add(chunk.Key);
-            }
-        }
-
-        foreach (var coord in toRemove)
-        {
-            chunks.Remove(coord);
-        }
-        */
     }
-
-
 }

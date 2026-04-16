@@ -10,7 +10,7 @@ public class Chunk
 
     private float chunkSize, spacing, clusterCount, elementsPerCluster, clusterRadius, noiseScale, threshold, typeScale;
     private bool usesEffect;
-    private GameObject[] elements;
+    private GameObject[] elements, elementsGeneric, elementsTerrain;
     float density = 20f; 
 
     public float chunkHeight = 700f;
@@ -26,7 +26,9 @@ public class Chunk
         float threshold, 
         GameObject[] elements,
         float elementTypeNoiseScale,
-        bool usesEffect)
+        bool usesEffect,
+        GameObject[] elementsGeneric,
+        GameObject[] elementsTerrain)
     {
         this.coord = coord;
         this.chunkSize = chunkSize;
@@ -44,20 +46,78 @@ public class Chunk
         this.typeScale = elementTypeNoiseScale;
         this.usesEffect = usesEffect;
 
+        this.elementsTerrain = elementsTerrain;
+
+        this.elementsGeneric = elementsGeneric;
+
         parentObject = new GameObject($"Chunk_{coord.x}_{coord.y}");
+
         GeneratePerlin();
         GenerateGeneric();
+        GenerateTerrain();
+    }
+
+    void GenerateTerrain()
+    {
+        float genericElementsPerChunk = 1;
+
+        for (int i = 0; i < genericElementsPerChunk; i++)
+        {
+            float randomX = Random.Range(0, chunkSize);
+            float randomZ = Random.Range(0, chunkSize);
+
+            Vector3 pos = new Vector3(
+                coord.x * chunkSize + randomX,
+                0,
+                coord.y * chunkSize + randomZ
+            );
+
+
+            float size = Random.Range(5f, 7f);
+            int selectedElement = GetWeightedIndex();
+
+            Quaternion rotation = Quaternion.Euler(90f, Random.Range(0f, 360f), 0);
+            if ( selectedElement > 2 ) // Spagetti porque tengo que terminar y me ha pasado que importe mal los assets
+            {
+                rotation = Quaternion.Euler(-90f, Random.Range(0f, 360f), 0);
+            }
+                
+            SpawnElement(pos.x, pos.y, pos.z, 0, elementsTerrain[selectedElement], size, rotation);
+        }
+    }
+
+    int GetWeightedIndex() // Menos pirámides más arcos
+    {
+        float[] weights = new float[] { 3f, 3f, 3f, 1f, 1f, 1f };
+        float totalWeight = 0f;
+
+        for (int i = 0; i < weights.Length; i++)
+            totalWeight += weights[i];
+
+        float randomValue = Random.Range(0, totalWeight);
+
+        float cumulative = 0f;
+
+        for (int i = 0; i < weights.Length; i++)
+        {
+            cumulative += weights[i];
+
+            if (randomValue <= cumulative)
+                return i;
+        }
+
+        return 0;
     }
 
     void GenerateGeneric()
     {
         float genericDensity = Mathf.FloorToInt((chunkSize * chunkSize) / spacing * spacing);
-        float genericElementsPerChunk = elementsPerCluster/5;
+        float genericElementsPerChunk = elementsPerCluster/15;
         for (int i = 0; i < genericElementsPerChunk; i++)
         {
             float randomX = Random.Range(0, chunkSize);
-            float randomY = Random.Range(0, chunkHeight);
-            float randomZ =Random.Range(0, chunkSize);
+            float randomY = Random.Range(100, chunkHeight);
+            float randomZ = Random.Range(0, chunkSize);
 
             Vector3 pos = new Vector3(
                 coord.x * chunkSize + randomX,
@@ -65,14 +125,10 @@ public class Chunk
                 coord.y * chunkSize + randomZ
             );
 
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
             float size = Random.Range(2f, 12f);
 
-            cube.transform.localScale = Vector3.one * size;
-            cube.transform.position = pos;
-            cube.transform.rotation = Random.rotation;
-            cube.transform.SetParent(parentObject.transform);
+            SpawnElement(pos.x, pos.y, pos.z, 0, elementsGeneric[Random.Range(0, elementsGeneric.Length)], size, Random.rotation);
         }
     }
     void GeneratePerlin()
@@ -82,7 +138,7 @@ public class Chunk
             
             Vector3 center = new Vector3(
                 coord.x * chunkSize + Random.Range(0, chunkSize),
-                Random.Range(0, chunkHeight),
+                Random.Range(100, chunkHeight),
                 coord.y * chunkSize + Random.Range(0, chunkSize)
             );
 
@@ -123,7 +179,7 @@ public class Chunk
                 Vector3 pos = center + offset;
 
                 
-                SpawnElement(pos.x, pos.y, pos.z, noise, selectedElement);
+                SpawnElement(pos.x, pos.y, pos.z, noise, selectedElement, 0, Random.rotation);
             }
         }
     }
@@ -141,13 +197,21 @@ public class Chunk
         return (xy + yz + xz + yx + zy + zx) / 6f;
     }
 
-    void SpawnElement(float x, float y, float z, float noise, GameObject selectedElement)
+    void SpawnElement(float x, float y, float z, float noise, GameObject selectedElement, float size, Quaternion rotation)
     {
         Vector3 pos = new Vector3(x, y, z);
 
-        GameObject element = Object.Instantiate(selectedElement, pos, Random.rotation);
+        GameObject element = Object.Instantiate(selectedElement, pos, rotation);
 
-        float size = Mathf.Lerp(2f, 4f, noise);
+ 
+        if (noise == 0 && size == 0)
+        {
+            size = Random.Range(2f, 4f);
+        }
+        else if (size == 0)
+        {
+            size = Mathf.Lerp(2f, 4f, noise);
+        }
         
         if(usesEffect)
         {
@@ -159,9 +223,6 @@ public class Chunk
             element.transform.localScale = Vector3.one * size;
         }
        
-        element.transform.position = pos;
-        element.transform.rotation = Random.rotation;
-
         element.transform.SetParent(parentObject.transform);
     }
     public void Destroy()
