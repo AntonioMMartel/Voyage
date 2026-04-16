@@ -11,7 +11,7 @@ public class ScaleInEffect : MonoBehaviour
 
     IEnumerator ScaleRoutine(float target)
     {
-        yield return new WaitForSeconds(Random.Range(0f, 0.3f)); //Damos tiempo a que se suceda la animación
+        yield return new WaitForSeconds(Random.Range(0f, 0.1f)); //Damos tiempo a que se suceda la animación
         float time = 0f;
 
         while (time < duration)

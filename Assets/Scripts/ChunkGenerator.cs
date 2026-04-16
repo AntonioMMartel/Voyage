@@ -4,6 +4,7 @@ using UnityEngine;
 public class ChunkGenerator : MonoBehaviour
 {
     [SerializeField] Transform player;
+    private HashSet<Vector2Int> neededChunks;
 
     [Header("Chunk Settings")]
     [SerializeField] float chunkSize = 50f;
@@ -21,11 +22,74 @@ public class ChunkGenerator : MonoBehaviour
     [SerializeField] float noiseScale = 0.01f;
     [SerializeField] float threshold = 0.55f;
 
+    private void Start()
+    {
+        LoadChunks();
+    }
     void Update()
     {
-        UpdateChunks();
+        //UpdateChunks();
     }
 
+
+    void LoadChunks()
+    {
+        Vector2Int playerChunk = new Vector2Int(
+            Mathf.FloorToInt(player.position.x / chunkSize),
+            Mathf.FloorToInt(player.position.z / chunkSize)
+        );
+
+        this.neededChunks = new HashSet<Vector2Int>();
+
+        for (int x = -10; x <= 10; x++)
+        {
+            for (int z = -10; z <= 10; z++)
+            {
+                Vector2Int coord = new Vector2Int(
+                    playerChunk.x + x,
+                    playerChunk.y + z
+                );
+                neededChunks.Add(coord);
+                if (!chunks.ContainsKey(coord))
+                {
+                    Chunk newChunk = new Chunk(
+                        coord,
+                        chunkSize,
+                        spacing,
+                        clusterCount,
+                        elementsPerCluster,
+                        clusterRadius,
+                        noiseScale,
+                        threshold,
+                        elements,
+                        elementTypeNoiseScale
+                    );
+
+
+                    chunks.Add(coord, newChunk);
+                }
+            }
+        }
+
+
+        /*
+        List<Vector2Int> toRemove = new List<Vector2Int>();
+
+        foreach (var chunk in chunks)
+        {
+            if (!neededChunks.Contains(chunk.Key))
+            {
+                chunk.Value.Destroy();
+                toRemove.Add(chunk.Key);
+            }
+        }
+
+        foreach (var coord in toRemove)
+        {
+            chunks.Remove(coord);
+        }
+        */
+    }
     void UpdateChunks()
     {
         Vector2Int playerChunk = new Vector2Int(
@@ -40,8 +104,8 @@ public class ChunkGenerator : MonoBehaviour
             for (int z = -5; z <= 5; z++)
             {
                 Vector2Int coord = new Vector2Int(
-                    playerChunk.x + x,
-                    playerChunk.y + z
+                    0 + x,
+                    210 + z
                 );
 
                 neededChunks.Add(coord);
@@ -65,8 +129,8 @@ public class ChunkGenerator : MonoBehaviour
             }
         }
 
-
-
+        
+        /*
         List<Vector2Int> toRemove = new List<Vector2Int>();
 
         foreach (var chunk in chunks)
@@ -82,6 +146,7 @@ public class ChunkGenerator : MonoBehaviour
         {
             chunks.Remove(coord);
         }
+        */
     }
 
 

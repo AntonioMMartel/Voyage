@@ -1,3 +1,4 @@
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -63,13 +64,9 @@ public class Chunk
 
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-            float targetScale = Random.Range(2f, 12f);
+            float size = Random.Range(2f, 12f);
 
-            cube.transform.localScale = Vector3.zero;
-
-            var effect = cube.AddComponent<ScaleInEffect>();
-            effect.Play(targetScale);
-
+            cube.transform.localScale = Vector3.one * size;
             cube.transform.position = pos;
             cube.transform.rotation = Random.rotation;
             cube.transform.SetParent(parentObject.transform);
