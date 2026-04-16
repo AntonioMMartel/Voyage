@@ -41,9 +41,41 @@ public class Chunk
         this.typeScale = elementTypeNoiseScale;
 
         parentObject = new GameObject($"Chunk_{coord.x}_{coord.y}");
-        Generate();
+        GeneratePerlin();
+        GenerateGeneric();
     }
-    void Generate()
+
+    void GenerateGeneric()
+    {
+        float genericDensity = Mathf.FloorToInt((chunkSize * chunkSize) / spacing * spacing);
+        float genericElementsPerChunk = elementsPerCluster;
+        for (int i = 0; i < genericElementsPerChunk; i++)
+        {
+            float randomX = Random.Range(0, chunkSize);
+            float randomY = Random.Range(0, chunkHeight);
+            float randomZ =Random.Range(0, chunkSize);
+
+            Vector3 pos = new Vector3(
+                coord.x * chunkSize + randomX,
+                randomY,
+                coord.y * chunkSize + randomZ
+            );
+
+            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+            float targetScale = Random.Range(2f, 12f);
+
+            cube.transform.localScale = Vector3.zero;
+
+            var effect = cube.AddComponent<ScaleInEffect>();
+            effect.Play(targetScale);
+
+            cube.transform.position = pos;
+            cube.transform.rotation = Random.rotation;
+            cube.transform.SetParent(parentObject.transform);
+        }
+    }
+    void GeneratePerlin()
     {
         for (int c = 0; c < clusterCount; c++)
         {
