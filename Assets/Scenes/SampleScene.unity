@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 2c5860b47910fd94d9686b8396c002ee, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -554,7 +554,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.90943396, g: 0.12869336, b: 0.887656, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1483,7 +1483,7 @@ MonoBehaviour:
   - {fileID: 7170948255051207690, guid: 475ef97e8a860074fb440c6f9f11fb21, type: 3}
   - {fileID: 7170948255051207690, guid: 475ef97e8a860074fb440c6f9f11fb21, type: 3}
   elementsGeneric:
-  - {fileID: 1792184354}
+  - {fileID: 7737861180395223216, guid: 41d01010afc5ca44aa913b810dcf8fb6, type: 3}
   elementsTerrain:
   - {fileID: 2624413322214355261, guid: 2c35289eccf52f947a9daac6f4e6c59f, type: 3}
   - {fileID: 3021926729376174590, guid: 1b838812a8210584795e45c635fbb1b1, type: 3}
