@@ -11,8 +11,9 @@ public class Chunk
     private float chunkSize, spacing, clusterCount, elementsPerCluster, clusterRadius, noiseScale, threshold, typeScale;
     private bool usesEffect;
     private GameObject[] elements, elementsGeneric, elementsTerrain;
-    float density = 20f; 
 
+    private Vector3 playerSpawn = new Vector3(0, 210, 0);
+    private float spawnSafeRadius = 20f;
     public float chunkHeight = 700f;
 
 
@@ -201,29 +202,33 @@ public class Chunk
     {
         Vector3 pos = new Vector3(x, y, z);
 
-        GameObject element = Object.Instantiate(selectedElement, pos, rotation);
+        if (Vector3.Distance(pos, playerSpawn) > spawnSafeRadius) //Prevenimos spawn sobre jugador al spawnear
+        {
+            GameObject element = Object.Instantiate(selectedElement, pos, rotation);
 
- 
-        if (noise == 0 && size == 0)
-        {
-            size = Random.Range(2f, 4f);
+
+            if (noise == 0 && size == 0)
+            {
+                size = Random.Range(2f, 4f);
+            }
+            else if (size == 0)
+            {
+                size = Mathf.Lerp(2f, 4f, noise);
+            }
+
+            if (usesEffect)
+            {
+                element.transform.localScale = Vector3.zero;
+                var effect = element.AddComponent<ScaleInEffect>();
+                effect.Play(size);
+            }
+            else
+            {
+                element.transform.localScale = Vector3.one * size;
+            }
+
+            element.transform.SetParent(parentObject.transform);
         }
-        else if (size == 0)
-        {
-            size = Mathf.Lerp(2f, 4f, noise);
-        }
-        
-        if(usesEffect)
-        {
-            element.transform.localScale = Vector3.zero;
-            var effect = element.AddComponent<ScaleInEffect>();
-            effect.Play(size);
-        } else
-        {
-            element.transform.localScale = Vector3.one * size;
-        }
-       
-        element.transform.SetParent(parentObject.transform);
     }
     public void Destroy()
     {
