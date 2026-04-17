@@ -54,7 +54,7 @@ public class Chunk
         parentObject = new GameObject($"Chunk_{coord.x}_{coord.y}");
 
         GeneratePerlin();
-        GenerateGeneric();
+        //GenerateGeneric();
         GenerateTerrain();
     }
 
