@@ -33,8 +33,7 @@ public class GameManager : MonoBehaviour
     {
         if (gameEnded) return;
 
-        // Example: increase distance over time
-        distanceTravelled += Time.deltaTime * 10f; // adjust speed as needed
+        distanceTravelled += Time.deltaTime * 10f; 
 
         if (distanceTravelled >= winDistance)
         {
