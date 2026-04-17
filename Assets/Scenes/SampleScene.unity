@@ -451,6 +451,10 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 5328233386819492569, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6027800171687980298, guid: 4901ccf9e2050594982e1343e86aa2bc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1534,8 +1538,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5633c9bfdb112624299dd5156a4c10ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  loseMenu: {fileID: 0}
-  winMenu: {fileID: 0}
+  loseMenu: {fileID: 336035606}
+  winMenu: {fileID: 129514504}
   winDistance: 1000
 --- !u!4 &1405728099
 Transform:

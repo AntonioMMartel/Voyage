@@ -143,6 +143,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        GameManager.Instance.PlayerDied();
         if (other.CompareTag("Obstacle"))
         {
             GameManager.Instance.PlayerDied();
