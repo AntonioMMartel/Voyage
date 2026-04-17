@@ -41,9 +41,9 @@ public class ChunkGenerator : MonoBehaviour
 
         this.neededChunks = new HashSet<Vector2Int>();
 
-        for (int x = -12; x <= 12; x++)
+        for (int x = -13; x <= 13; x++)
         {
-            for (int z = -10; z <= 10; z++)
+            for (int z = -13; z <= 13; z++)
             {
                 Vector2Int coord = new Vector2Int(
                     playerChunk.x + x,
@@ -102,9 +102,9 @@ public class ChunkGenerator : MonoBehaviour
 
         HashSet<Vector2Int> neededChunks = new HashSet<Vector2Int>();
 
-        for (int x = -5; x <= 5; x++)
+        for (int x = -6; x <= 6; x++)
         {
-            for (int z = -5; z <= 5; z++)
+            for (int z = -6; z <= 6; z++)
             {
                 Vector2Int coord = new Vector2Int(
                     playerChunk.x + x,

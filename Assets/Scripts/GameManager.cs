@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private bool gameEnded = false;
 
     [SerializeField] Transform player;
+    [SerializeField] TMP_Text distanceText;
 
     private void Awake()
     {
@@ -35,10 +36,11 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (gameEnded) return;
+        float distance = new Vector3(player.position.x, 0f, player.position.z).magnitude;
 
-        distanceTravelled += Time.deltaTime * 10f;
+        distanceText.text = $"{distance:0} m";
 
-        if (player.position.sqrMagnitude > 2000f * 2000f)
+        if (distance > 1000f)
         {
             WinGame();
         }
