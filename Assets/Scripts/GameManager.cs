@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] float winDistance = 1000f;
     private float distanceTravelled = 0f;
     private bool gameEnded = false;
+
+    [SerializeField] Transform player;
 
     private void Awake()
     {
@@ -33,9 +36,9 @@ public class GameManager : MonoBehaviour
     {
         if (gameEnded) return;
 
-        distanceTravelled += Time.deltaTime * 10f; 
+        distanceTravelled += Time.deltaTime * 10f;
 
-        if (distanceTravelled >= winDistance)
+        if (player.position.sqrMagnitude > 2000f * 2000f)
         {
             WinGame();
         }
